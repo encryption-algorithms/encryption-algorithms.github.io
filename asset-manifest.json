@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/encryption-algorithms.github.io/static/css/main.48c703fe.chunk.css",
+    "main.js": "/encryption-algorithms.github.io/static/js/main.2a6ad124.chunk.js",
+    "main.js.map": "/encryption-algorithms.github.io/static/js/main.2a6ad124.chunk.js.map",
+    "runtime-main.js": "/encryption-algorithms.github.io/static/js/runtime-main.93ad38eb.js",
+    "runtime-main.js.map": "/encryption-algorithms.github.io/static/js/runtime-main.93ad38eb.js.map",
+    "static/js/2.4aba1607.chunk.js": "/encryption-algorithms.github.io/static/js/2.4aba1607.chunk.js",
+    "static/js/2.4aba1607.chunk.js.map": "/encryption-algorithms.github.io/static/js/2.4aba1607.chunk.js.map",
+    "index.html": "/encryption-algorithms.github.io/index.html",
+    "static/css/main.48c703fe.chunk.css.map": "/encryption-algorithms.github.io/static/css/main.48c703fe.chunk.css.map",
+    "static/js/2.4aba1607.chunk.js.LICENSE.txt": "/encryption-algorithms.github.io/static/js/2.4aba1607.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.93ad38eb.js",
+    "static/js/2.4aba1607.chunk.js",
+    "static/css/main.48c703fe.chunk.css",
+    "static/js/main.2a6ad124.chunk.js"
+  ]
+}
