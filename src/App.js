@@ -1,14 +1,32 @@
-import React from 'react'
+import React from 'react';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
-import Main from './main'
-
+import routes from './components/routes';
+import SideBar from './components/common/SideBar';
 import './App.css'
 
 function App() {
     return (
-        <div className="App">
-            <Main />
-        </div>
+        <BrowserRouter>
+            <div id="wrapper">
+                <SideBar/>
+                <Switch>
+                    {routes.map(({ component: Component, path, ...rest }) => {
+                        return (
+                        <Route
+                            render={(props) => (
+                                <React.Suspense fallback={"loading..."}>
+                                    <Component {...props} />
+                                </React.Suspense>
+                            )}
+                            path={path}
+                            key={path}
+                            {...rest} />
+                        );
+                    })}
+                </Switch>
+            </div>
+        </BrowserRouter>
     )
 }
 
