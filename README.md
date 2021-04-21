@@ -8,6 +8,7 @@ Encryption Algorithms
 `npm install`
 
 `npm install react-router-dom`
+
 `npm install crypto-js`
 
 ## Run application

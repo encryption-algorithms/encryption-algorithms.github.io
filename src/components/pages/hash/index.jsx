@@ -23,20 +23,22 @@ class HashPage extends Component {
 
     encrypt (type, data) {
         if(this.encInput.state.inputString === ''){
-            this.setState({validationEnc: {
-                string: "Please enter this field!!!",
-                isError: true,
-            }})
+            this.setState({validationEnc: {string: "Please enter this field!!!", isError: true}})
         } else {
-            const encrypted = require('crypto').createHash(type).update(data).digest('hex')
-            this.setState({
-                encryptedString: encrypted,
-                validationEnc: {
-                    string: "",
-                    isError: false,
-                }
-            })
-            this.endInput.state.inputString = encrypted;
+            try{
+                const encrypted = require('crypto').createHash(type).update(data).digest('hex')
+                this.setState({
+                    encryptedString: encrypted,
+                    validationEnc: {
+                        string: "",
+                        isError: false,
+                    }
+                })
+                this.endInput.state.inputString = encrypted;
+            } catch(err){
+                return
+            }
+
         };
 
     }

@@ -57,18 +57,23 @@ class TripleDESPage extends Component {
             this.setState({validationEnc: {string: "Please enter this field!!!", isError: true}})
         }
         if(this.encInput.state.inputString !== '' && this.keyInput.state.inputString !== '') {
-            const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
-            const cipher = crypto.createCipheriv('des-ede3', md5Key, '');
+            try{
+                const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
+                const cipher = crypto.createCipheriv('des-ede3', md5Key, '');
 
-            let encrypted = cipher.update(data, 'utf8', 'base64');
-            encrypted += cipher.final('base64');
-            this.setState({
-                decryptString: encrypted,
-                validationKey: {string: '', isError: false},
-                validationEnc: {string: '', isError: false}
-            });
-            this.decInput.state.inputString = encrypted;
-            return encrypted;
+                let encrypted = cipher.update(data, 'utf8', 'base64');
+                encrypted += cipher.final('base64');
+                this.setState({
+                    decryptString: encrypted,
+                    validationKey: {string: '', isError: false},
+                    validationEnc: {string: '', isError: false}
+                });
+                this.decInput.state.inputString = encrypted;
+                return encrypted;
+            } catch(err) {
+                return
+            }
+
         }
     }
     /**
@@ -81,13 +86,17 @@ class TripleDESPage extends Component {
         if (this.decInput.state.inputString === '') {
             this.setState({validationDec: {string: "Please encrypt before!!!", isError: true}})
         } else {
-            const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
-            const decipher = crypto.createDecipheriv('des-ede3', md5Key, '');
+            try{
+                const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
+                const decipher = crypto.createDecipheriv('des-ede3', md5Key, '');
 
-            let encrypted = decipher.update(data, 'base64', 'utf8');
-            encrypted += decipher.final('utf8');
-            this.setState({decryptedString: encrypted, validationDec: {string: '', isError: false}});
-            return encrypted;
+                let encrypted = decipher.update(data, 'base64', 'utf8');
+                encrypted += decipher.final('utf8');
+                this.setState({decryptedString: encrypted, validationDec: {string: '', isError: false}});
+                return encrypted;
+            } catch(err) {
+                return
+            }
         }
     }
 

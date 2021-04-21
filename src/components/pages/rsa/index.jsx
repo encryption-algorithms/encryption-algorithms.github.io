@@ -36,21 +36,26 @@ class RSAPage extends Component {
         if(this.encInput.state.inputString === '') {
             this.setState({validationEnc: {string: "Please enter this field!!!", isError: true}})
         } else {
-            const encrypted = crypto.publicEncrypt(
-                {
-                    key: this.state.publicKey,
-                    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-                    oaepHash: "sha256",
-                },
-                //Convert data string to a buffer
-                Buffer.from(this.encInput.state.inputString)
-            )
-            this.decInput.state.inputString = encrypted.toString("base64")
-            this.setState({
-                decryptString: encrypted.toString("base64"),
-                buffer: encrypted,
-                validationEnc: {string: "", isError: false}
-            })
+            try{
+                const encrypted = crypto.publicEncrypt(
+                    {
+                        key: this.state.publicKey,
+                        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+                        oaepHash: "sha256",
+                    },
+                    //Convert data string to a buffer
+                    Buffer.from(this.encInput.state.inputString)
+                )
+                this.decInput.state.inputString = encrypted.toString("base64")
+                this.setState({
+                    decryptString: encrypted.toString("base64"),
+                    buffer: encrypted,
+                    validationEnc: {string: "", isError: false}
+                })
+            } catch(err) {
+                return
+            }
+
         }
 
     }
@@ -58,16 +63,21 @@ class RSAPage extends Component {
         if(this.decInput.state.inputString === ''){
             this.setState({validationDec: {string: "Please encrypt before!!!", isError: true}})
         } else {
-            const decrypted = crypto.privateDecrypt(
-                {
-                    key: this.state.privateKey,
-                    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-                    oaepHash: "sha256",
-                },
-                this.state.buffer
-            )
-            this.dedInput.state.inputString = decrypted.toString()
-            this.setState({decryptedString: decrypted.toString(), validationDec: {string: "", isError: false}})
+            try{
+                const decrypted = crypto.privateDecrypt(
+                    {
+                        key: this.state.privateKey,
+                        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+                        oaepHash: "sha256",
+                    },
+                    this.state.buffer
+                )
+                this.dedInput.state.inputString = decrypted.toString()
+                this.setState({decryptedString: decrypted.toString(), validationDec: {string: "", isError: false}})
+            } catch(err) {
+                return
+            }
+
         }
     }
 
