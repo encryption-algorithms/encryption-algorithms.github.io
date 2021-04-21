@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import ValidateInput from '../../common/ValidateInput'
+import ValidateTextArea from '../../common/ValidateTextArea'
 // var CryptoJS = require("crypto-js");
 const crypto = require("crypto");
 
@@ -7,11 +9,25 @@ class TripleDESPage extends Component {
         super(props)
 
         this.state = {
-            keyString: '',
             encryptString: '',
             decryptString: '',
             decryptedString: '',
+            validationKey: {
+                string: "",
+                isError: false,
+            },
+            validationEnc: {
+                string: "",
+                isError: false,
+            },
+            validationDec: {
+                string: "",
+                isError: false,
+            }
         }
+        this.encrypt3DES = this.encrypt3DES.bind(this)
+        this.decrypt3DES = this.decrypt3DES.bind(this)
+
     }
 
     componentDidMount () {
@@ -24,13 +40,36 @@ class TripleDESPage extends Component {
      * @returns {*} A base64 string
      */
     encrypt3DES(data, key) {
-        const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
-        const cipher = crypto.createCipheriv('des-ede3', md5Key, '');
+        if(this.keyInput.state.inputString === '') {
+            if(this.encInput.state.inputString !== '')
+                this.setState({
+                    validationKey: {string: "Please enter this field!!!", isError: true},
+                    validationEnc: {string: "", isError: false}
+                })
+            this.setState({validationKey: {string: "Please enter this field!!!", isError: true}})
+        }
+        if(this.encInput.state.inputString === '') {
+            if(this.keyInput.state.inputString !== '')
+                this.setState({
+                    validationEnc: {string: "Please enter this field!!!", isError: true},
+                    validationKey: {string: "", isError: false}
+                })
+            this.setState({validationEnc: {string: "Please enter this field!!!", isError: true}})
+        }
+        if(this.encInput.state.inputString !== '' && this.keyInput.state.inputString !== '') {
+            const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
+            const cipher = crypto.createCipheriv('des-ede3', md5Key, '');
 
-        let encrypted = cipher.update(data, 'utf8', 'base64');
-        encrypted += cipher.final('base64');
-        this.setState({decryptString: encrypted},()=>console.log(encrypted));
-        return encrypted;
+            let encrypted = cipher.update(data, 'utf8', 'base64');
+            encrypted += cipher.final('base64');
+            this.setState({
+                decryptString: encrypted,
+                validationKey: {string: '', isError: false},
+                validationEnc: {string: '', isError: false}
+            });
+            this.decInput.state.inputString = encrypted;
+            return encrypted;
+        }
     }
     /**
      * Decrypt 3DES using Node.js's crypto module
@@ -39,25 +78,18 @@ class TripleDESPage extends Component {
      * @returns {*} a utf8 string
      */
     decrypt3DES(data, key) {
-        const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
-        const decipher = crypto.createDecipheriv('des-ede3', md5Key, '');
+        if (this.decInput.state.inputString === '') {
+            this.setState({validationDec: {string: "Please encrypt before!!!", isError: true}})
+        } else {
+            const md5Key = crypto.createHash('md5').update(key).digest("hex").substr(0, 24);
+            const decipher = crypto.createDecipheriv('des-ede3', md5Key, '');
 
-        let encrypted = decipher.update(data, 'base64', 'utf8');
-        encrypted += decipher.final('utf8');
-        this.setState({decryptedString: encrypted});
-        return encrypted;
+            let encrypted = decipher.update(data, 'base64', 'utf8');
+            encrypted += decipher.final('utf8');
+            this.setState({decryptedString: encrypted, validationDec: {string: '', isError: false}});
+            return encrypted;
+        }
     }
-    // encryptHandle () {
-    //     let data = this.state.encryptString
-    //     let key = this.state.keyString
-    //     let IV = "12345678"
-    //     let cipher = CryptoJS.TripleDES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
-    //     iv: CryptoJS.enc.Utf8.parse(IV),
-    //     mode: CryptoJS.mode.CBC
-    // });
-
-    // console.log(cipher.toString())
-    // }
 
     render () {
         return(
@@ -70,39 +102,35 @@ class TripleDESPage extends Component {
                     <div className="card-body">
                         <div className="row m-0 flex-column ">
                             <div className="row m-0 mb-4">
-                                <div className="col-lg-6">
-                                    <div className="row">
-                                        <button  className="btn btn-primary btn-icon-split"
-                                            onClick={()=>this.encrypt3DES.bind(this)(this.state.encryptString, this.state.keyString)}
-                                        >
-                                            <span className="icon text-white-50">
-                                                <i className="fas fa-arrow-right"></i>
-                                            </span>
-                                            <span className="text">Encrypt</span>
-                                        </button>
-                                    </div>
-
+                                <div className="col-lg-6 p-0">
+                                    <button
+                                        className="btn btn-primary btn-icon-split"
+                                        onClick={() => this.encrypt3DES(this.encInput.state.inputString, this.keyInput.state.inputString)}
+                                    >
+                                        <span className="icon text-white-50">
+                                            <i className="fas fa-arrow-right"></i>
+                                        </span>
+                                        <span className="text">Encrypt</span>
+                                    </button>
                                 </div>
-                                <div className="col-lg-6">
-                                    <div className="row">
-                                        <h5 className="col-lg-3 m-0 p-0 text-lg align-self-center text-nowrap">Key</h5>
-                                        <input
-                                            className="form-control form-control-md col-lg-9 m-0 p-0 pl-2"
-                                            onChange={(e)=> this.setState({keyString: e.target.value})}
-                                            value={this.state.keyString}
-                                            required
-                                        ></input>
-                                    </div>
+                                <div className="col-lg-6 p-0">
+                                    <ValidateInput
+                                        placeholder="Key"
+                                        ref={(input) => {this.keyInput = input ? input : undefined}}
+                                        validation={this.state.validationKey}
+                                    />
                                 </div>
                             </div>
-                            <textarea className="form-control form-control-md mb-4" placeholder="Encrypt" required
-                                onChange={(e)=> this.setState({encryptString: e.target.value})}
-                            ></textarea>
+                            <ValidateTextArea
+                                placeholder="Encrypt"
+                                ref={(input) => {this.encInput = input ? input : undefined}}
+                                validation={this.state.validationEnc}
+                            />
                         </div>
                         <div className="row m-0 flex-column ">
                             <div className="row m-0 mb-4">
                                 <button  className="btn btn-info btn-icon-split"
-                                    onClick={()=>this.decrypt3DES.bind(this)(this.state.decryptString, this.state.keyString)}
+                                    onClick={()=>this.decrypt3DES(this.decInput.state.inputString, this.keyInput.state.inputString)}
                                 >
                                     <span className="icon text-white-50">
                                         <i className="fas fa-arrow-right"></i>
@@ -110,16 +138,18 @@ class TripleDESPage extends Component {
                                     <span className="text">Decrypt</span>
                                 </button>
                             </div>
-                            <div className="row mb-4 m-0">
-                                <textarea className="form-control form-control-md" placeholder="Decrypt"
-                                    onChange={(e)=> this.setState({decryptString: e.target.value})}
-                                    value={this.state.decryptString}
-                                ></textarea>
-                            </div>
-                            <textarea className="form-control form-control-md" placeholder="Decrypted"
-                                onChange={(e)=> this.setState({decryptedString: e.target.value})}
+                            <ValidateTextArea
+                                ref={(input) => {this.decInput = input ? input : undefined}}
+                                placeholder="Decrypt"
+                                validation={this.state.validationDec}
+                                value={this.state.decryptString}
+                            />
+                            <ValidateTextArea
+                                ref={(input) => {this.dedInput = input ? input : undefined}}
+                                placeholder="Decrypted"
+                                validation=""
                                 value={this.state.decryptedString}
-                            ></textarea>
+                            />
                         </div>
                     </div>
                 </div>
@@ -127,5 +157,6 @@ class TripleDESPage extends Component {
         )
     }
 }
+
 
 export default TripleDESPage;

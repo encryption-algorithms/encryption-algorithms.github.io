@@ -1,14 +1,43 @@
 import React, { Component } from 'react'
+import ValidateInput from '../../common/ValidateInput'
+import ValidateTextArea from '../../common/ValidateTextArea'
 
 class HashPage extends Component {
     constructor (props) {
         super(props)
 
         this.state = {
+            encryptString: '',
+            encryptedString: '',
+            validationEnc: {
+                string: "",
+                isError: false,
+            },
         }
+        this.encrypt = this.encrypt.bind(this)
     }
 
     componentDidMount () {
+
+    }
+
+    encrypt (type, data) {
+        if(this.encInput.state.inputString === ''){
+            this.setState({validationEnc: {
+                string: "Please enter this field!!!",
+                isError: true,
+            }})
+        } else {
+            const encrypted = require('crypto').createHash(type).update(data).digest('hex')
+            this.setState({
+                encryptedString: encrypted,
+                validationEnc: {
+                    string: "",
+                    isError: false,
+                }
+            })
+            this.endInput.state.inputString = encrypted;
+        };
 
     }
 
@@ -23,16 +52,20 @@ class HashPage extends Component {
                     <div className="card-body">
                         <div className="row m-0 flex-column ">
                             <div className="row m-0 mb-4">
-                                <div className="col-lg-12">
-                                    <div className="row">
-                                        <h5 className="col-lg-3 text-nowrap align-self-center text-lg">Hash String</h5>
-                                        <input className="form-control form-control-md col-lg-9 m-0 p-0 pl-2" placeholder="Encrypt"></input>
-                                    </div>
+                                <div className="col-lg-12 p-0">
+                                    <ValidateInput
+                                        placeholder="Hash String"
+                                        ref={(input) => {this.encInput = input ? input : undefined}}
+                                        validation={this.state.validationEnc}
+                                    />
                                 </div>
                             </div>
                             <div className="row m-0">
                                 <div className="mb-4 mr-4">
-                                    <button  className="btn btn-info  btn-icon-split" onClick={()=>{alert('Encrypt MD5')}}>
+                                    <button
+                                        className="btn btn-info  btn-icon-split"
+                                        onClick={()=>this.encrypt("md5", this.encInput.state.inputString)}
+                                    >
                                         <span className="icon text-white-50">
                                             <i className="fas fa-arrow-right"></i>
                                         </span>
@@ -40,7 +73,9 @@ class HashPage extends Component {
                                     </button>
                                 </div>
                                 <div className="mb-4 mr-4">
-                                    <button className="btn btn-info  btn-icon-split" onClick={()=>{alert('Encrypt SHA-1')}}>
+                                    <button
+                                        className="btn btn-info  btn-icon-split"
+                                        onClick={()=>{this.encrypt("sha1", this.encInput.state.inputString)}}>
                                         <span className="icon text-white-50">
                                             <i className="fas fa-arrow-right"></i>
                                         </span>
@@ -48,7 +83,9 @@ class HashPage extends Component {
                                     </button>
                                 </div>
                                 <div className="mb-4 mr-4">
-                                    <button className="btn btn-info  btn-icon-split" onClick={()=>{alert('Encrypt SHA2-512')}}>
+                                    <button
+                                        className="btn btn-info  btn-icon-split"
+                                        onClick={()=>{this.encrypt("sha512", this.encInput.state.inputString)}}>
                                         <span className="icon text-white-50">
                                             <i className="fas fa-arrow-right"></i>
                                         </span>
@@ -56,8 +93,12 @@ class HashPage extends Component {
                                     </button>
                                 </div>
                             </div>
-
-                            <textarea className="form-control form-control-md mb-4" placeholder="Encrypt"></textarea>
+                            <ValidateTextArea
+                                placeholder="Encrypted"
+                                ref={(input) => {this.endInput = input ? input : undefined}}
+                                validation=""
+                                value={this.state.encryptedString}
+                            />
                         </div>
                     </div>
                 </div>

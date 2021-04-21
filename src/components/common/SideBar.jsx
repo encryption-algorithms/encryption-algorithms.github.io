@@ -15,7 +15,7 @@ class SideBar extends Component {
     }
 
     sidebarToggle() {
-        this.setState({sidebarToggle: !this.state.sidebarToggle},console.log(this.state.sidebarToggle))
+        this.setState({sidebarToggle: !this.state.sidebarToggle})
     }
 
     render () {
@@ -67,7 +67,7 @@ class SideBar extends Component {
                     <button
                         className="rounded-circle border-0"
                         id="sidebarToggle"
-                        onClick={()=>{this.sidebarToggle(); console.log('click')}}
+                        onClick={()=>{this.sidebarToggle()}}
                     />
                 </div>
 
