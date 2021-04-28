@@ -38,23 +38,29 @@ class SideBar extends Component {
                 <hr className="sidebar-divider my-0"/>
 
                 {/* <!-- Nav Item - Dashboard --> */}
+                <li className="nav-item">
+                    <Link to="/vigenere" className="nav-link" >
+                        <i className="fas fa-fw fa-angle-right"></i>
+                        <span>Vigenere</span>
+                    </Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/rsa" className="nav-link" >
+                        <i className="fas fa-fw fa-angle-right"></i>
+                        <span>RSA</span>
+                    </Link>
+                </li>
                 {/* <!-- Nav Item - Pages Collapse Menu --> */}
                 <li className="nav-item">
                     <Link to="/3des" className="nav-link" >
-                        <i className="fas fa-fw fa-wrench"></i>
+                        <i className="fas fa-fw fa-angle-right"></i>
                         <span>3DES</span>
                     </Link>
                 </li>
                 {/* <!-- Nav Item - Utilities Collapse Menu --> */}
                 <li className="nav-item">
-                    <Link to="/rsa" className="nav-link" >
-                        <i className="fas fa-fw fa-wrench"></i>
-                        <span>RSA</span>
-                    </Link>
-                </li>
-                <li className="nav-item">
                     <Link to="/hash" className="nav-link" >
-                        <i className="fas fa-fw fa-cog"></i>
+                        <i className="fas fa-fw fa-angle-right"></i>
                         <span>Hash Function</span>
                     </Link>
                 </li>
